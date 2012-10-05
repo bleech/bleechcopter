@@ -16,14 +16,26 @@ var app     = express(),
     client  = arDrone.createClient(),
     sio     = io.listen(server);
 
-var droneControl = function( data ) {
+var yAcc = 0.1,
+    xAcc = 0.2,
+    droneControl = function( data ) {
   console.log(data);
   if ( data.beta < 30 ) {
-    client.front( ( data.beta - 45 ) * -1 );
+    client.front( ( ( data.beta - 45 ) * -1 ) * yAcc );
   } else if( data.beta >= 30 && data.beta <= 60 ) {
-    client.stop();
+    client.front(0);
+    client.back(0);
   } else if( data.beta > 60 ) {
-    client.back( data.beta - 45 );
+    client.back( ( data.beta - 45 ) * yAcc );
+  }
+
+  if ( data.gamma < -15 ) {
+    client.counterClockwise( ( ( data.gamma ) * -1 ) * xAcc );
+  } else if( data.gamma >= -15 && data.gamma <= 15 ) {
+    client.counterClockwise(0);
+    client.clockwise(0);
+  } else if( data.gamma > 15 ) {
+    client.clockwise( data.gamma * xAcc );
   }
 };
 
