@@ -18,6 +18,13 @@ var app     = express(),
 
 var droneControl = function( data ) {
   console.log(data);
+  if ( data.beta < 30 ) {
+    client.front( ( data.beta - 45 ) * -1 );
+  } else if( data.beta >= 30 && data.beta <= 60 ) {
+    client.stop();
+  } else if( data.beta > 60 ) {
+    client.back( ( data.beta - 45 ) * -1 );
+  }
 };
 
 app.configure(function(){
@@ -50,5 +57,11 @@ sio.on('connection', function (socket) {
     // socket.io will leave the room upon disconnect
     socket.on('motion', function (data) {
       droneControl(data);
+    });
+    socket.on('takeoff', function (data) {
+      client.takeoff();
+    });
+    socket.on('land', function (data) {
+      client.land();
     });
 });
