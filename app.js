@@ -23,7 +23,7 @@ var droneControl = function( data ) {
   } else if( data.beta >= 30 && data.beta <= 60 ) {
     client.stop();
   } else if( data.beta > 60 ) {
-    client.back( ( data.beta - 45 ) * -1 );
+    client.back( data.beta - 45 );
   }
 };
 
